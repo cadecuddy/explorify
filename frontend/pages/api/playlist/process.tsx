@@ -1,22 +1,35 @@
+import { fetchPublicPlaylists } from "@/components/PlaylistLoader";
+import { GIN_WEB_SERVER_HOST } from "@/configuration/APIConstants";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { Session } from "next-auth";
 
 type RequestData = {
-  publicPlaylists: string[];
+  session: Session;
 };
 
 type ResponseData = {
   message: string;
 };
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
   if (req.method === "POST") {
-    const { publicPlaylists }: RequestData = req.body;
-    // send publicPlaylists to a service that processes them on localhost:3001
+    const { session }: RequestData = req.body;
 
-    fetch("http://localhost:3001/playlists", {
+    if (!session) return res.status(401).end(`Unauthorized`);
+
+    // get all of the user's public playlists from Spotify
+    const publicPlaylists = await fetchPublicPlaylists(session);
+
+    if (!publicPlaylists) {
+      res.status(500).json({ message: "Error fetching playlists" });
+      return;
+    }
+
+    // Send playlists to gin server for processing
+    await fetch(`${GIN_WEB_SERVER_HOST}/playlists`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,9 +37,9 @@ export default function handler(
       body: JSON.stringify({ publicPlaylists }),
     });
 
-    res.status(200).json({ message: "Processing playlists" });
+    return res.status(200).json({ message: "Playlists processed" });
   } else {
     res.setHeader("Allow", ["POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

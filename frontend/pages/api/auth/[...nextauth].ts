@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import SpotifyProvider from "next-auth/providers/spotify";
+import { pages } from "next/dist/build/templates/app-page";
 
 const scopes = [
   'user-read-email',
@@ -57,7 +58,7 @@ export const authOptions = {
       authorization: LOGIN_URL,
     }),
   ],
-  secret: process.env.JWT_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, account }: { token: any, account: any }) {
       // Persist the OAuth access_token to the token right after signin
@@ -78,10 +79,12 @@ export const authOptions = {
     async session({ session, token, user }: { session: any, token: any, user: any }) {
       // Send properties to the client, like an access_token from a provider.
       session.accessToken = token.accessToken
-      console.log(session)
       return session as Session
+    },
+    authorized({ token, session }: { token: any, session: any }) {
+      if (token && session.access_token) return true // If there is a token and access_token, the user is authorized
     }
-  }
+  },
 }
 
 export default NextAuth(authOptions)

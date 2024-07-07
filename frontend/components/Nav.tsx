@@ -36,7 +36,7 @@ function AuthedNav({ session }: { session: Session }) {
           alt="music note"
           className="fill-white"
         />
-        <span className="ml-2 font-light">Explorify</span>
+        <span className="ml-2 font-extrabold">EXPLORIFY</span>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
