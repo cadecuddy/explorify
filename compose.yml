@@ -1,0 +1,22 @@
+services:
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    container_name: explorify_frontend
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend/.env.local
+    volumes:
+      - "./frontend:/app"
+    ports:
+      - 3000:3000
+    environment:
+      - WATCHPACK_POLLING=true
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    container_name: explorify_webserver
+    ports:
+      - 3001:3001
