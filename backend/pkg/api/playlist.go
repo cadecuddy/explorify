@@ -19,7 +19,7 @@ func SendPlaylistsToQueue(c *gin.Context) {
 
 	// Send playlists to processing queue
 	ch, err := rabbitmq.GetMessageQueueChannel()
-	utils.PanicOnError(err)
+	utils.FailOnError(err, "Failed to connect to RabbitMQ Channel")
 
 	// publish all playlists to the processing queue
 	for _, playlist := range request.Playlists {
@@ -31,10 +31,10 @@ func SendPlaylistsToQueue(c *gin.Context) {
 			amqp.Publishing{
 				ContentType:  "text/plain",
 				Body:         []byte(playlist.ID.String()),
-				DeliveryMode: 2,
+				DeliveryMode: amqp.Persistent,
 			},
 		)
-		utils.PanicOnError(err)
+		utils.FailOnError(err, "Failed to publish a message")
 	}
 
 	c.JSON(200, gin.H{

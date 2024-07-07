@@ -2,8 +2,8 @@ package utils
 
 import "log"
 
-func PanicOnError(err error) {
+func FailOnError(err error, msg string) {
 	if err != nil {
-		log.Panic(err)
+		log.Panicf("%s: %s", msg, err)
 	}
 }

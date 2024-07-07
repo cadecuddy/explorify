@@ -16,7 +16,7 @@ var (
 	channelErr error
 )
 
-// GetMessageQueueChannel returns a singleton RabbitMQ connection
+// GetMessageQueueChannel returns a singleton connection to the RabbitMQ channel
 func GetMessageQueueChannel() (*amqp.Channel, error) {
 	once.Do(func() {
 		rabbitmqUser := os.Getenv("RABBITMQ_DEFAULT_USER")
@@ -24,10 +24,10 @@ func GetMessageQueueChannel() (*amqp.Channel, error) {
 
 		conn, connErr = amqp.Dial("amqp://" + rabbitmqUser + ":" + rabbitmqPass + "@rabbitmq:5672/")
 
-		utils.PanicOnError(connErr)
+		utils.FailOnError(connErr, "Error connecting to Rabbitmq")
 
 		ch, channelErr = conn.Channel()
-		utils.PanicOnError(channelErr)
+		utils.FailOnError(channelErr, "Error connecting to Rabbitmq Channel")
 
 		// Declare the queue that will be used to send playlists to be processed
 		ch.QueueDeclare(
