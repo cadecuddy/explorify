@@ -1,19 +1,16 @@
 package main
 
 import (
-	"io"
-	"os"
-
-	"github.com/cadecuddy/explorify/src/pkg/api"
-	"github.com/cadecuddy/explorify/src/pkg/utils"
+	"github.com/cadecuddy/explorify/pkg/api"
+	"github.com/cadecuddy/explorify/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	// gin.SetMode(gin.ReleaseMode)
-	logsFile, _ := os.OpenFile("gin.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	// logsFile, _ := os.OpenFile("../logs/gin.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
-	gin.DefaultWriter = io.MultiWriter(logsFile, os.Stdout)
+	// gin.DefaultWriter = io.MultiWriter(logsFile, os.Stdout)
 
 	// ping data stores so that healthcheck can pass on first query
 
