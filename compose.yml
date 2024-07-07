@@ -11,8 +11,6 @@ services:
       - "./frontend:/app"
     ports:
       - 3000:3000
-    environment:
-      - WATCHPACK_POLLING=true
 
   backend:
     build: ./backend
@@ -30,7 +28,7 @@ services:
       - 5672:5672
       - 15672:15672
     volumes:
-      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      - ./rabbitmq/data/:/var/lib/rabbitmq/
+      - ./rabbitmq/log/:/var/log/rabbitmq
     env_file:
       - .env.global

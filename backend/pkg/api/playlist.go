@@ -29,8 +29,9 @@ func SendPlaylistsToQueue(c *gin.Context) {
 			false,
 			false,
 			amqp.Publishing{
-				ContentType: "text/plain",
-				Body:        []byte(playlist.ID.String()),
+				ContentType:  "text/plain",
+				Body:         []byte(playlist.ID.String()),
+				DeliveryMode: 2,
 			},
 		)
 		utils.PanicOnError(err)
