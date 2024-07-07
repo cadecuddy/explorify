@@ -29,7 +29,7 @@ export default async function handler(
     }
 
     // Send playlists to gin server for processing
-    await fetch(`${GIN_WEB_SERVER_HOST}/playlists`, {
+    await fetch(`${GIN_WEB_SERVER_HOST}/playlists/process`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

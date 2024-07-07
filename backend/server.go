@@ -18,7 +18,7 @@ func main() {
 
 	r.GET("/healthcheck", utils.HealthCheck)
 
-	r.POST("/playlists", api.HandlePlaylists)
+	r.POST("/playlists/process", api.SendPlaylistsToQueue)
 
 	// set port to 3001
 	r.Run(":3001")
