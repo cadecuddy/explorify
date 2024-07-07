@@ -29,13 +29,19 @@ export default async function handler(
     }
 
     // Send playlists to gin server for processing
-    await fetch(`${GIN_WEB_SERVER_HOST}/playlists/process`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ publicPlaylists }),
-    });
+    const processRequest = await fetch(
+      `${GIN_WEB_SERVER_HOST}/playlists/process`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          accessToken: session.accessToken,
+          playlists: publicPlaylists,
+        }),
+      }
+    );
 
     return res.status(200).json({ message: "Playlists processed" });
   } else {

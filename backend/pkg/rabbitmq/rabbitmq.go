@@ -22,7 +22,7 @@ func GetMessageQueueChannel() (*amqp.Channel, error) {
 		rabbitmqUser := os.Getenv("RABBITMQ_DEFAULT_USER")
 		rabbitmqPass := os.Getenv("RABBITMQ_DEFAULT_PASS")
 
-		conn, connErr = amqp.Dial("amqp://" + rabbitmqUser + ":" + rabbitmqPass + "@rabbitmq:5672/")
+		conn, connErr = amqp.Dial("amqp://" + rabbitmqUser + ":" + rabbitmqPass + "@rabbitmq")
 
 		utils.FailOnError(connErr, "Error connecting to Rabbitmq")
 
