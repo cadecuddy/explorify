@@ -1,6 +1,8 @@
 package api
 
 import (
+	"encoding/json"
+
 	"github.com/cadecuddy/explorify/pkg/rabbitmq"
 	"github.com/cadecuddy/explorify/pkg/utils"
 	"github.com/gin-gonic/gin"
@@ -11,6 +13,11 @@ import (
 type HandlePlaylistRequest struct {
 	AccessToken string                   `json:"accessToken"`
 	Playlists   []spotify.SimplePlaylist `json:"playlists"`
+}
+
+type PlaylistMessage struct {
+	AccessToken string                 `json:"access_token"`
+	Playlist    spotify.SimplePlaylist `json:"playlist"`
 }
 
 // Recieves logged in user's public playlists and forwards them to the processing queue
@@ -24,15 +31,25 @@ func SendPlaylistsToQueue(c *gin.Context) {
 
 	// publish all playlists to the processing queue
 	for _, playlist := range request.Playlists {
+		message := PlaylistMessage{
+			AccessToken: request.AccessToken,
+			Playlist:    playlist,
+		}
+
+		messageBody, err := json.Marshal(message)
+		if err != nil {
+			utils.FailOnError(err, "Failed to marshal playlist message")
+			continue
+		}
+
 		err = ch.Publish(
 			"",
 			"playlists-to-process",
 			false,
 			false,
-			// publish the playlist ID and the user's access token
 			amqp.Publishing{
 				ContentType: "application/json",
-				Body:        []byte(`{"playlistId": "` + string(playlist.ID) + `", "accessToken": "` + request.AccessToken + `"}`),
+				Body:        messageBody,
 			},
 		)
 		utils.FailOnError(err, "Failed to publish a message")

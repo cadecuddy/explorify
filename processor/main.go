@@ -19,8 +19,8 @@ const (
 )
 
 type PlaylistMessage struct {
-	PlaylistId  string `json:"playlistId"`
-	AccessToken string `json:"accessToken"`
+	AccessToken string                 `json:"access_token"`
+	Playlist    spotify.SimplePlaylist `json:"playlist"`
 }
 
 func failOnError(err error, msg string) {
@@ -83,7 +83,7 @@ func main() {
 			}
 
 			client := &http.Client{}
-			req, err := http.NewRequest("GET", PLAYLIST_ENDPOINT+message.PlaylistId+"/tracks?"+TRACK_METADATA_QUERY+"&offset=0&limit=100", nil)
+			req, err := http.NewRequest("GET", PLAYLIST_ENDPOINT+message.Playlist.ID.String()+"/tracks?"+TRACK_METADATA_QUERY+"&offset=0&limit=100", nil)
 			if err != nil {
 				log.Printf("Error creating request: %s", err)
 				d.Nack(false, true)
@@ -126,9 +126,9 @@ func main() {
 			}
 
 			if len(tracks) > 0 {
-				log.Printf("%s - Total tracks: %d", tracks[len(tracks)-1].Track, len(tracks))
+				log.Printf("%s - Total tracks: %d", message.Playlist.Name, len(tracks))
 			} else {
-				log.Printf("FUCKED UP %s", message.PlaylistId)
+				log.Printf("FUCKED UP %s", message.Playlist.Name)
 			}
 
 			time.Sleep(1 * time.Second)
