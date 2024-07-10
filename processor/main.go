@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cadecuddy/explorify-processor/pkg/database"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/zmb3/spotify"
 )
@@ -19,8 +20,8 @@ const (
 )
 
 type PlaylistMessage struct {
-	AccessToken string                 `json:"access_token"`
-	Playlist    spotify.SimplePlaylist `json:"playlist"`
+	AccessToken string               `json:"access_token"`
+	Playlist    spotify.FullPlaylist `json:"playlist"`
 }
 
 func failOnError(err error, msg string) {
@@ -32,6 +33,9 @@ func failOnError(err error, msg string) {
 func main() {
 	rabbitmqUser := os.Getenv("RABBITMQ_DEFAULT_USER")
 	rabbitmqPass := os.Getenv("RABBITMQ_DEFAULT_PASS")
+
+	db, err := database.GetConnection()
+	failOnError(err, "Couldn't connect to MySQL from consumer")
 
 	conn, connErr := amqp.Dial("amqp://" + rabbitmqUser + ":" + rabbitmqPass + "@rabbitmq")
 	failOnError(connErr, "Failed to connect to RabbitMQ")
@@ -127,6 +131,10 @@ func main() {
 
 			if len(tracks) > 0 {
 				log.Printf("%s - Total tracks: %d", message.Playlist.Name, len(tracks))
+				err := database.InsertPlaylist(db, message.Playlist)
+				if err != nil {
+					failOnError(err, "Error adding playlist")
+				}
 			} else {
 				log.Printf("FUCKED UP %s", message.Playlist.Name)
 			}

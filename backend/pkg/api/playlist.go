@@ -11,13 +11,13 @@ import (
 )
 
 type HandlePlaylistRequest struct {
-	AccessToken string                   `json:"accessToken"`
-	Playlists   []spotify.SimplePlaylist `json:"playlists"`
+	AccessToken string                 `json:"accessToken"`
+	Playlists   []spotify.FullPlaylist `json:"playlists"`
 }
 
 type PlaylistMessage struct {
-	AccessToken string                 `json:"access_token"`
-	Playlist    spotify.SimplePlaylist `json:"playlist"`
+	AccessToken string               `json:"access_token"`
+	Playlist    spotify.FullPlaylist `json:"playlist"`
 }
 
 // Recieves logged in user's public playlists and forwards them to the processing queue

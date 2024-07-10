@@ -1,2 +1,3 @@
 .env.global
 /rabbitmq/
+database/data

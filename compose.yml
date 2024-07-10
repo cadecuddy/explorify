@@ -28,6 +28,7 @@ services:
     restart: unless-stopped
     depends_on:
       - rabbitmq
+      - mysql
     ports:
       - 3002
     env_file:
@@ -37,6 +38,8 @@ services:
     image: rabbitmq:3-management-alpine
     restart: unless-stopped
     container_name: "rabbitmq"
+    depends_on:
+      - mysql
     ports:
       - 5672:5672
       - 15672:15672
@@ -45,3 +48,19 @@ services:
       - ./rabbitmq/log/:/var/log/rabbitmq
     env_file:
       - .env.global
+
+  mysql:
+    build:
+      context: ./database/
+    image: "mysql:8.0"
+    container_name: mysql
+    restart: unless-stopped
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./database/data:/var/lib/mysql
+    env_file:
+      - .env.global
+
+volumes:
+  casecalc:
