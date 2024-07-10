@@ -1,4 +1,4 @@
-import { fetchPublicPlaylists } from "@/components/PlaylistLoader";
+import { fetchPublicPlaylists } from "@/components/playlist/PlaylistLoader";
 import { GIN_WEB_SERVER_HOST } from "@/configuration/APIConstants";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Session } from "next-auth";

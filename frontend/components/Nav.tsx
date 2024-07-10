@@ -7,11 +7,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import Link from "next/link";
 
 interface NavProps {
   session: Session | null;
@@ -55,7 +52,11 @@ function AuthedNav({ session }: { session: Session }) {
           <DropdownMenuItem>
             <div
               className="hover:cursor-pointer hover:outline-none hover:ring-0 outline-transparent"
-              onClick={() => signOut()}
+              onClick={() =>
+                signOut({
+                  callbackUrl: "/",
+                })
+              }
             >
               Logout
             </div>
@@ -68,7 +69,7 @@ function AuthedNav({ session }: { session: Session }) {
 
 function UnauthedNav() {
   return (
-    <div className="flex items-center justify-between p-8 text-secondary sm:mx-auto sm:max-w-6xl">
+    <div className="flex items-center justify-between p-8 h-32 text-secondary sm:mx-auto sm:max-w-6xl">
       <div className="flex items-center text-4xl">
         <Image
           src="note.svg"
@@ -77,12 +78,12 @@ function UnauthedNav() {
           alt="music note"
           className="fill-white"
         />
-        <h1 className="ml-2 font-light">Explorify</h1>
+        <span className="ml-2 font-extrabold">EXPLORIFY</span>
       </div>
       <Button
         variant={"ghost"}
         className="text-base font-normal"
-        onClick={() => signIn("spotify")}
+        onClick={() => signIn("spotify", { callbackUrl: "/search" })}
       >
         Login
       </Button>

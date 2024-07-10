@@ -22,8 +22,8 @@ export function checkLocalStorage(): boolean {
   if (localStore) {
     const parsedLocalStore = JSON.parse(localStore);
 
-    // If the site has not been accessed in the last hour
-    if (Date.now() - parsedLocalStore.siteAccessed > 1000 * 60 * 60 * 1) {
+    // If the site has not been accessed in the last 24 hours
+    if (Date.now() - parsedLocalStore.siteAccessed > 1000 * 60 * 60 * 24) {
       createLocalStorage();
       return true;
     }

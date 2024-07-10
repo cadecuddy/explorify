@@ -19,5 +19,5 @@ export default function AuthedLanding() {
     }
   }, []);
 
-  return <div>search</div>;
+  return <div className="text-center text-white">search</div>;
 }
