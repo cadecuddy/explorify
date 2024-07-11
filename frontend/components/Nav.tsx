@@ -16,15 +16,13 @@ interface NavProps {
 
 export default function Nav({ session }: NavProps) {
   return (
-    <nav className="bg-background">
-      {session ? <AuthedNav session={session} /> : <UnauthedNav />}
-    </nav>
+    <nav>{session ? <AuthedNav session={session} /> : <UnauthedNav />}</nav>
   );
 }
 
 function AuthedNav({ session }: { session: Session }) {
   return (
-    <div className="flex items-center justify-between p-8 h-32 text-secondary sm:mx-auto sm:max-w-6xl">
+    <div className="flex items-center justify-between p-8 h-32 text-secondary">
       <div className="flex items-center text-4xl">
         <Image
           src="note.svg"
@@ -69,7 +67,7 @@ function AuthedNav({ session }: { session: Session }) {
 
 function UnauthedNav() {
   return (
-    <div className="flex items-center justify-between p-8 h-32 text-secondary sm:mx-auto sm:max-w-6xl">
+    <div className="flex items-center justify-between p-8 h-32 text-secondary">
       <div className="flex items-center text-4xl">
         <Image
           src="note.svg"
@@ -82,10 +80,10 @@ function UnauthedNav() {
       </div>
       <Button
         variant={"ghost"}
-        className="text-base font-normal"
+        className="text-base font-extrabold"
         onClick={() => signIn("spotify", { callbackUrl: "/search" })}
       >
-        Login
+        LOGIN
       </Button>
     </div>
   );

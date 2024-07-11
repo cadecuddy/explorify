@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import Loading from "@/components/Loading";
 import Nav from "@/components/Nav";
 import { useRouter } from "next/router";
+import MainLayout from "@/layouts/MainLayout";
 
 export default function Home() {
   const { data, status } = useSession();
@@ -16,9 +17,10 @@ export default function Home() {
   }
 
   return (
-    <main className={"min-h-screen bg-background"}>
-      <Nav session={data} />
-      <h1 className="text-center text-secondary text-2xl">sign in man</h1>
-    </main>
+    <MainLayout description="haha" title="home / explorify">
+      <div className="max-w-7xl mx-auto">
+        <Nav session={data} />
+      </div>
+    </MainLayout>
   );
 }

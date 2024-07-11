@@ -1,6 +1,5 @@
 import NextAuth from "next-auth"
 import SpotifyProvider from "next-auth/providers/spotify";
-import { pages } from "next/dist/build/templates/app-page";
 
 const scopes = [
   'user-read-email',
@@ -58,6 +57,9 @@ export const authOptions = {
       authorization: LOGIN_URL,
     }),
   ],
+  pages: {
+    signIn: "/signin"
+  },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, account }: { token: any, account: any }) {
