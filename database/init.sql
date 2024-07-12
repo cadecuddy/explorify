@@ -32,18 +32,23 @@ CREATE TABLE IF NOT EXISTS Album (
 CREATE TABLE IF NOT EXISTS Track (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255),
-    album_id VARCHAR(255) REFERENCES Album(id),
+    album_id VARCHAR(255),
     duration INT,
-    explicit BOOL,
+    explicit BOOLEAN,
     external_urls TEXT,
     preview_url VARCHAR(255),
     uri VARCHAR(255),
-    type VARCHAR(255),
-    artist_ids TEXT
+    type VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS TrackToArtist (
+    track_id VARCHAR(255) REFERENCES Track(id),
+    artist_id VARCHAR(255) REFERENCES Artist(id),
+    PRIMARY KEY (track_id, artist_id)
 );
 
 CREATE TABLE IF NOT EXISTS TrackToPlaylist (
-    PRIMARY KEY (track_id, playlist_id),
     track_id VARCHAR(255) REFERENCES Track(id),
-    playlist_id VARCHAR(255) REFERENCES Playlist(id)
+    playlist_id VARCHAR(255) REFERENCES Playlist(id),
+    PRIMARY KEY (track_id, playlist_id)
 );
