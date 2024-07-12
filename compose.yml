@@ -61,6 +61,3 @@ services:
       - ./database/data:/var/lib/mysql
     env_file:
       - .env.global
-
-volumes:
-  casecalc:
