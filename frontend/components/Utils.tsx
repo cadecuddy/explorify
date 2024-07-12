@@ -1,3 +1,5 @@
+const HOURS_IN_SECONDS = 1000 * 60 * 60;
+
 export const decodeHTMLEntities = (text: string | undefined) => {
   if (!text) return "";
   const textArea = document.createElement("textarea");
@@ -23,7 +25,7 @@ export function checkLocalStorage(): boolean {
     const parsedLocalStore = JSON.parse(localStore);
 
     // If the site has not been accessed in the last 24 hours
-    if (Date.now() - parsedLocalStore.siteAccessed > 1000 * 60 * 60 * 24) {
+    if (Date.now() - parsedLocalStore.siteAccessed > HOURS_IN_SECONDS * 24) {
       createLocalStorage();
       return true;
     }
