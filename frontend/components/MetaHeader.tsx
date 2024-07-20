@@ -12,7 +12,7 @@ export default function MetaHeader({ title, description }: MetaHeaderProps) {
     <>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width,initial-scale=1" />
-      <link rel="icon" type="image/svg+xml" href="/hat.svg" />
+      <link rel="icon" type="image/svg+xml" href="/note.svg" />
       <title>{title}</title>
       <meta name="title" content={title} />
       <meta name="description" content={description} />

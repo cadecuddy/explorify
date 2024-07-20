@@ -17,7 +17,10 @@ export default function Home() {
   }
 
   return (
-    <MainLayout description="haha" title="home / explorify">
+    <MainLayout
+      description="Find your next favorite playlist based on songs you love"
+      title="home / explorify"
+    >
       <div className="max-w-7xl mx-auto">
         <Nav session={data} />
       </div>
