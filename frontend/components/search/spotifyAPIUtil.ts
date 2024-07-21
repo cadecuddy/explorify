@@ -7,6 +7,13 @@ export type TrackSelection = {
     id: string;
 }
 
+export type PlaylistSearchResult = {
+    name: string;
+    picture: string;
+    id: string;
+    url: string;
+}
+
 export async function fetchSpotifyTracks(songName: string, session: Session): Promise<TrackSelection[]> {
     const response = await fetch(`https://api.spotify.com/v1/search?q=${songName}&type=track&limit=5&offset=0`, {
         headers: {

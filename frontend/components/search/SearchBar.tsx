@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { fetchSpotifyTracks, TrackSelection } from "./spotifyAPIUtil";
 import { useSession } from "next-auth/react";
+import { useSearchContext } from "./SearchContext";
 
 /**
  * Component for adding songs to search query. Displays track track
@@ -9,22 +10,19 @@ import { useSession } from "next-auth/react";
  */
 export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedTracks, setSelectedTracks] = useState<TrackSelection[]>([]);
   const [suggestedTracks, setSuggestedTracks] = useState<TrackSelection[]>([]);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
   const { data } = useSession();
+  const { tracksToSearch, setTracksToSearch } = useSearchContext();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
   const handleTrackSelection = (track: TrackSelection) => {
-    setSelectedTracks([...selectedTracks, track]);
+    setTracksToSearch([...tracksToSearch, track]);
     setSearchQuery("");
-  };
-
-  const handleTrackRemoval = (track: TrackSelection) => {
-    setSelectedTracks(selectedTracks.filter((t) => t.id !== track.id));
   };
 
   // Suggest songs based on current query after user stops typing after 1 second
@@ -60,8 +58,6 @@ export default function SearchBar() {
           placeholder="Search for songs..."
           onChange={handleInputChange}
           value={searchQuery}
-          selectedTracks={selectedTracks}
-          handleTrackRemoval={handleTrackRemoval}
         />
       </div>
       {suggestedTracks.length > 0 && (
