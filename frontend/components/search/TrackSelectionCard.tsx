@@ -31,7 +31,7 @@ export default function TrackSelectionCard({ track }: TrackSelectionCardProps) {
   };
 
   return (
-    <div className="flex items-center border px-2 py-1">
+    <div className="flex items-center border px-2 py-1 bg-neutral-300 rounded-md">
       <p
         className="font-semibold text-black align-middle max-w-36 truncate"
         title={`${track.name} - ${track.artist}`}

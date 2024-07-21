@@ -9,10 +9,12 @@ import { useSearchContext } from "./SearchContext";
  * selection suggestions and creates & maintains track search context.
  */
 export default function SearchBar() {
+  // local state
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [suggestedTracks, setSuggestedTracks] = useState<TrackSelection[]>([]);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
+  // global hooks and shit
   const { data } = useSession();
   const { tracksToSearch, setTracksToSearch } = useSearchContext();
 
@@ -21,6 +23,15 @@ export default function SearchBar() {
   };
 
   const handleTrackSelection = (track: TrackSelection) => {
+    // ensure not duplicate
+    if (
+      tracksToSearch
+        .map((existingTrack) => existingTrack.id)
+        .indexOf(track.id) != -1
+    ) {
+      return;
+    }
+
     setTracksToSearch([...tracksToSearch, track]);
     setSearchQuery("");
   };
