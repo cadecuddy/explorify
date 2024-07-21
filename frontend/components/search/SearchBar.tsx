@@ -38,6 +38,7 @@ export default function SearchBar() {
     }
 
     setTracksToSearch([...tracksToSearch, track]);
+    setSearchQuery("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -64,8 +65,6 @@ export default function SearchBar() {
 
         const playlistSearchResults: PlaylistSearchResult[] =
           responseJson.playlists.playlists;
-
-        console.log(playlistSearchResults);
 
         setPlaylistResults(playlistSearchResults);
       }
