@@ -52,3 +52,7 @@ CREATE TABLE IF NOT EXISTS TrackToPlaylist (
     playlist_id VARCHAR(255) REFERENCES Playlist(id),
     PRIMARY KEY (track_id, playlist_id)
 );
+
+CREATE INDEX idx_track_id ON TrackToPlaylist(track_id);
+
+CREATE INDEX idx_playlist_id ON TrackToPlaylist(playlist_id);
