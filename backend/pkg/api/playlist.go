@@ -2,7 +2,9 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 
+	"github.com/cadecuddy/explorify/pkg/database"
 	"github.com/cadecuddy/explorify/pkg/rabbitmq"
 	"github.com/cadecuddy/explorify/pkg/utils"
 	"github.com/gin-gonic/gin"
@@ -57,5 +59,28 @@ func SendPlaylistsToQueue(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"status": "playlists received",
+	})
+}
+
+type FindPlaylistsWithTracksRequest struct {
+	AccessToken string   `json:"accessToken"`
+	TrackIds    []string `json:"tracks"`
+}
+
+func FindPlaylistsWithTracks(c *gin.Context) {
+	var request FindPlaylistsWithTracksRequest
+	c.BindJSON(&request)
+
+	playlists, err := database.GetPlaylistsFromTracks(request.TrackIds)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "Failed to get playlists",
+		})
+		log.Println(err)
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"playlists": playlists,
 	})
 }

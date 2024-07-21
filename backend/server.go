@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/cadecuddy/explorify/pkg/api"
+	"github.com/cadecuddy/explorify/pkg/database"
 	"github.com/cadecuddy/explorify/pkg/rabbitmq"
 	"github.com/cadecuddy/explorify/pkg/utils"
 	"github.com/gin-gonic/gin"
@@ -20,9 +21,13 @@ func main() {
 	_, err := rabbitmq.GetMessageQueueChannel()
 	utils.FailOnError(err, "Failed to connect to RabbitMQ")
 
+	_, err = database.GetConnection()
+	utils.FailOnError(err, "Couldn't connect to MySQL from consumer")
+
 	r.GET("/healthcheck", utils.HealthCheck)
 
 	r.POST("/playlists/process", api.SendPlaylistsToQueue)
+	r.POST("/playlists/search", api.FindPlaylistsWithTracks)
 
 	// set port to 3001
 	r.Run(":3001")

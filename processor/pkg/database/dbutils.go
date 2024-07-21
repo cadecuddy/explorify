@@ -59,8 +59,8 @@ func InsertTracks(db *sql.DB, playlist spotify.FullPlaylist, tracks []spotify.Pl
 	trackToPlaylistValues := []interface{}{}
 
 	for _, track := range tracks {
-		// Skip if the track ID is missing
-		if track.Track.ID.String() == "" {
+		// Skip if the track ID is missing or track is a local file
+		if track.Track.ID.String() == "" || track.IsLocal {
 			continue
 		}
 		if track.Track.Album.ID.String() == "" {

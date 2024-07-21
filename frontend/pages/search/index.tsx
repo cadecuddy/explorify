@@ -31,9 +31,9 @@ export default function Search() {
 
           <div className="mt-4 p-2">
             <SearchBar />
-            <SearchResults />
           </div>
           <hr className="mt-8 mb-8 border-neutral-700" />
+          <SearchResults />
         </SearchProvider>
       </PlaylistProcessorWrapper>
     </MainLayout>

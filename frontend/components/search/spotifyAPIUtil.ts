@@ -8,10 +8,15 @@ export type TrackSelection = {
 }
 
 export type PlaylistSearchResult = {
-    name: string;
-    picture: string;
     id: string;
+    description: string;
     url: string;
+    followers: number;
+    image: string;
+    name: string;
+    ownerUrl: string;
+    ownerName: string;
+    tracks: number;
 }
 
 export async function fetchSpotifyTracks(songName: string, session: Session): Promise<TrackSelection[]> {

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
-import { fetchSpotifyTracks, TrackSelection } from "./spotifyAPIUtil";
+import {
+  fetchSpotifyTracks,
+  PlaylistSearchResult,
+  TrackSelection,
+} from "./spotifyAPIUtil";
 import { useSession } from "next-auth/react";
 import { useSearchContext } from "./SearchContext";
 
@@ -16,7 +20,8 @@ export default function SearchBar() {
 
   // global hooks and shit
   const { data } = useSession();
-  const { tracksToSearch, setTracksToSearch } = useSearchContext();
+  const { tracksToSearch, setTracksToSearch, setPlaylistResults } =
+    useSearchContext();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -33,8 +38,39 @@ export default function SearchBar() {
     }
 
     setTracksToSearch([...tracksToSearch, track]);
-    setSearchQuery("");
   };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && tracksToSearch.length > 0) {
+      doPlaylistSearch();
+    }
+  };
+
+  async function doPlaylistSearch() {
+    if (data && data.accessToken && tracksToSearch.length > 0) {
+      const playlistSearchResponse = await fetch("/api/playlist/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          session: data,
+          tracks: tracksToSearch.map((track) => track.id),
+        }),
+      });
+
+      if (playlistSearchResponse.status == 200) {
+        const responseJson = await playlistSearchResponse.json();
+
+        const playlistSearchResults: PlaylistSearchResult[] =
+          responseJson.playlists.playlists;
+
+        console.log(playlistSearchResults);
+
+        setPlaylistResults(playlistSearchResults);
+      }
+    }
+  }
 
   // Suggest songs based on current query after user stops typing after 1 second
   useEffect(() => {
@@ -69,6 +105,8 @@ export default function SearchBar() {
           placeholder="Search for songs..."
           onChange={handleInputChange}
           value={searchQuery}
+          searchFunction={doPlaylistSearch}
+          onKeyDown={handleKeyPress}
         />
       </div>
       {suggestedTracks.length > 0 && (

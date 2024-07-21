@@ -2,11 +2,14 @@ import { cn } from "@/lib/utils";
 import React from "react";
 import TrackSelectionCard from "../search/TrackSelectionCard";
 import { useSearchContext } from "../search/SearchContext";
+import { useSession } from "next-auth/react";
+import { PlaylistSearchResult } from "../search/spotifyAPIUtil";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  searchFunction?: () => void;
 }
 
 const SEARCH_SVG = (
@@ -27,8 +30,9 @@ const SEARCH_SVG = (
 );
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, value, onChange, ...props }, ref) => {
-    const { tracksToSearch } = useSearchContext();
+  ({ className, type, value, searchFunction, onChange, ...props }, ref) => {
+    const { tracksToSearch, setPlaylistResults } = useSearchContext();
+    const { data } = useSession();
 
     return (
       <div className="relative flex items-center w-full">
@@ -56,6 +60,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <button
           type="button"
           className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-4 -mr-1 rounded-md"
+          onClick={searchFunction}
         >
           {SEARCH_SVG}
         </button>

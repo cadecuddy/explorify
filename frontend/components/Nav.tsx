@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import Link from "next/link";
 
 interface NavProps {
   session: Session | null;
@@ -23,16 +24,18 @@ export default function Nav({ session }: NavProps) {
 function AuthedNav({ session }: { session: Session }) {
   return (
     <div className="flex items-center justify-between p-8 h-32 text-secondary">
-      <div className="flex items-center text-4xl">
-        <Image
-          src="note.svg"
-          width={45}
-          height={45}
-          alt="music note"
-          className="fill-white"
-        />
-        <span className="ml-2 font-extrabold">EXPLORIFY</span>
-      </div>
+      <Link href="/">
+        <div className="flex items-center text-4xl">
+          <Image
+            src="note.svg"
+            width={45}
+            height={45}
+            alt="music note"
+            className="fill-white"
+          />
+          <span className="ml-2 font-extrabold">EXPLORIFY</span>
+        </div>
+      </Link>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="flex items-center border-2 px-2 py-1 rounded-md cursor-pointer hover:cursor-pointer">
@@ -68,16 +71,18 @@ function AuthedNav({ session }: { session: Session }) {
 function UnauthedNav() {
   return (
     <div className="flex items-center justify-between p-8 h-32 text-secondary">
-      <div className="flex items-center text-4xl">
-        <Image
-          src="note.svg"
-          width={45}
-          height={45}
-          alt="music note"
-          className="fill-white"
-        />
-        <span className="ml-2 font-extrabold">EXPLORIFY</span>
-      </div>
+      <Link href="/">
+        <div className="flex items-center text-4xl">
+          <Image
+            src="note.svg"
+            width={45}
+            height={45}
+            alt="music note"
+            className="fill-white"
+          />
+          <span className="ml-2 font-extrabold">EXPLORIFY</span>
+        </div>
+      </Link>
       <Button
         variant={"ghost"}
         className="text-base font-extrabold"
