@@ -30,7 +30,7 @@ async function refreshAccessToken(token: any) {
   params.append("grant_type", "refresh_token")
   params.append("refresh_token", token.refreshToken)
 
-  const base64 = Buffer.from(process.env.SPOTIFY_CLIENT_ID + ":" + process.env.SPOTIFY_SECRET).toString('base64')
+  const base64 = Buffer.from(process.env.SPOTIFY_CLIENT_ID + ":" + process.env.SPOTIFY_CLIENT_SECRET).toString('base64')
 
   const response = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
