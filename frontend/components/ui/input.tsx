@@ -1,11 +1,14 @@
-import * as React from "react";
-
 import { cn } from "@/lib/utils";
+import { TrackSelection } from "../search/spotifyAPIUtil";
+import React from "react";
+import TrackSelectionCard from "../search/TrackSelectionCard";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedTracks: TrackSelection[];
+  handleTrackRemoval: (track: TrackSelection) => void;
 }
 
 const SEARCH_SVG = (
@@ -26,7 +29,7 @@ const SEARCH_SVG = (
 );
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, value, onChange, ...props }, ref) => {
+  ({ className, type, value, selectedTracks, onChange, ...props }, ref) => {
     return (
       <div className="relative flex items-center w-full">
         <div className="absolute left-3 flex items-center pointer-events-none top-1/2 transform -translate-y-1/2">
@@ -43,6 +46,17 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           {...props}
         />
+        {selectedTracks.length > 0 && (
+          <div className="flex items-center space-x-2 absolute right-2 top-1/2 transform -translate-y-1/2 pr-16">
+            {selectedTracks.map((track) => (
+              <TrackSelectionCard
+                key={track.id}
+                track={track}
+                handleTrackRemoval={props.handleTrackRemoval}
+              />
+            ))}
+          </div>
+        )}
         <button
           type="button"
           className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-4 -mr-1 rounded-md"

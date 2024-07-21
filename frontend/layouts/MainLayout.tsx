@@ -8,6 +8,9 @@ type MainLayoutProps = {
   title: string;
 };
 
+/**
+ *  Layout used for providing site meta tags to child page(s)
+ */
 export default function MainLayout({
   children,
   description,

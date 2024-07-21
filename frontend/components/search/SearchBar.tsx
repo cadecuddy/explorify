@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
-import { fetchSpotifyTracks } from "./spotifyAPIUtil";
+import { fetchSpotifyTracks, TrackSelection } from "./spotifyAPIUtil";
 import { useSession } from "next-auth/react";
 
+/**
+ * Component for adding songs to search query. Displays track track
+ * selection suggestions and creates & maintains track search context.
+ */
 export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [songs, setSongs] = useState<String[]>([]);
+  const [selectedTracks, setSelectedTracks] = useState<TrackSelection[]>([]);
+  const [suggestedTracks, setSuggestedTracks] = useState<TrackSelection[]>([]);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const { data } = useSession();
 
@@ -13,25 +18,33 @@ export default function SearchBar() {
     setSearchQuery(e.target.value);
   };
 
+  const handleTrackSelection = (track: TrackSelection) => {
+    setSelectedTracks([...selectedTracks, track]);
+    setSearchQuery("");
+  };
+
+  const handleTrackRemoval = (track: TrackSelection) => {
+    setSelectedTracks(selectedTracks.filter((t) => t.id !== track.id));
+  };
+
+  // Suggest songs based on current query after user stops typing after 1 second
   useEffect(() => {
-    // if search is not empty, wait 3 seconds and check if query changed.
-    // If it has, show the first 5 spotify track results based on the query
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
 
     if (searchQuery.trim() !== "" && data !== null) {
       const id = setTimeout(async () => {
-        const results: string[] = await fetchSpotifyTracks(searchQuery, data);
-        setSongs(results);
-      }, 2000);
+        const results = await fetchSpotifyTracks(searchQuery, data);
+        setSuggestedTracks(results);
+      }, 1000);
 
       setTimeoutId(id);
     } else {
-      setSongs([]);
+      setSuggestedTracks([]);
     }
 
-    // Clean up the timeout on component unmount
+    // cleanup timeout, just to be safe
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId);
@@ -47,16 +60,34 @@ export default function SearchBar() {
           placeholder="Search for songs..."
           onChange={handleInputChange}
           value={searchQuery}
+          selectedTracks={selectedTracks}
+          handleTrackRemoval={handleTrackRemoval}
         />
       </div>
-      {songs.length > 0 && (
-        <ul className="mt-2 text-white">
-          {songs.slice(0, 5).map((song, index) => (
-            <li key={index} className="text-black dark:text-white">
-              {song}
-            </li>
-          ))}
-        </ul>
+      {suggestedTracks.length > 0 && (
+        <div className="mt-4">
+          <ul className="space-y-2">
+            {suggestedTracks.map((track) => (
+              <li
+                key={track.id}
+                className="flex items-center space-x-2 hover:cursor-pointer"
+                onClick={() => handleTrackSelection(track)}
+              >
+                <img
+                  src={track.picture}
+                  alt="track"
+                  className="w-12 h-12 rounded-sm"
+                />
+                <div>
+                  <p className="font-semibold text-white">{track.name}</p>
+                  <p className="text-md text-neutral-400">
+                    {track.artist.join(", ")}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </>
   );

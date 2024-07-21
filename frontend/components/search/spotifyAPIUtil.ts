@@ -1,14 +1,13 @@
 import { Session } from "next-auth";
 
-export type SearchSuggestion = {
+export type TrackSelection = {
     name: string;
-    artist: string;
+    artist: string[];
     picture: string;
+    id: string;
 }
 
-export async function fetchSpotifyTracks(songName: string, session: Session): Promise<string[]> {
-    console.log(session);
-
+export async function fetchSpotifyTracks(songName: string, session: Session): Promise<TrackSelection[]> {
     const response = await fetch(`https://api.spotify.com/v1/search?q=${songName}&type=track&limit=5&offset=0`, {
         headers: {
             Authorization: `Bearer ${session.accessToken}`,
@@ -17,7 +16,15 @@ export async function fetchSpotifyTracks(songName: string, session: Session): Pr
 
     let tracks: SpotifyApi.TrackSearchResponse = await response.json();
 
-    // extract the track names from the response
-    let trackNames: string[] = tracks.tracks.items.map((track) => track.name);
-    return trackNames;
+    let suggestions: TrackSelection[] = tracks.tracks.items.map((track) => {
+        return {
+            name: track.name,
+            artist: track.artists.map((artist) => artist.name),
+            picture: track.album.images[0].url,
+            id: track.id,
+        };
+    }
+    );
+
+    return suggestions;
 }
