@@ -77,8 +77,5 @@ func GetPlaylistsFromTracks(trackIds []string) ([]Playlist, error) {
 		playlists = append(playlists, playlist)
 	}
 
-	fmt.Println(playlists)
-	fmt.Println(query)
-
 	return playlists, nil
 }
