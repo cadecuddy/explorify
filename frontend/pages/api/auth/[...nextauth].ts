@@ -70,8 +70,9 @@ export const authOptions = {
         token.accessTokenExpires = account.expires_at
         return token
       }
+
       // access token has not expired
-      if (token.accessTokenExpires && Date.now() < token.accessTokenExpires * 1000) {
+      if (token.accessTokenExpires && Date.now() < token.accessTokenExpires) {
         return token
       }
 
