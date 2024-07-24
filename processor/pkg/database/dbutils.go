@@ -10,7 +10,8 @@ import (
 
 // Inserts a playlist into the database. If the playlist is already there
 // all fields except for the ID are updated.
-func InsertPlaylist(db *sql.DB, playlist spotify.FullPlaylist) error {
+func InsertPlaylist(db *sql.DB, playlist spotify.FullPlaylist, topGenres []string) error {
+	// Insert or update the playlist
 	query := `
 		INSERT INTO Playlist (id, description, url, followers, image, name, owner_url, owner_displayName, snapshot_id, tracks_total)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -25,7 +26,12 @@ func InsertPlaylist(db *sql.DB, playlist spotify.FullPlaylist) error {
 		ownerDisplayName = playlist.Owner.DisplayName
 	}
 
-	_, err := db.Exec(query,
+	tx, err := db.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	_, err = tx.Exec(query,
 		playlist.ID.String(),
 		playlist.Description,
 		playlist.ExternalURLs["spotify"],
@@ -37,7 +43,65 @@ func InsertPlaylist(db *sql.DB, playlist spotify.FullPlaylist) error {
 		playlist.SnapshotID,
 		playlist.Tracks.Total,
 	)
-	return err
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to insert or update playlist: %w", err)
+	}
+
+	// Insert genres and playlist-genre relationships
+	for _, genre := range topGenres {
+		genreID, err := insertGenre(tx, genre)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to insert genre: %w", err)
+		}
+
+		err = insertPlaylistGenre(tx, playlist.ID.String(), genreID)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to insert playlist-genre relationship: %w", err)
+		}
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	return nil
+}
+
+func insertGenre(tx *sql.Tx, genre string) (int, error) {
+	// Try to insert the genre
+	query := `
+		INSERT INTO Genre (name) VALUES (?)
+		ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)
+	`
+	_, err := tx.Exec(query, genre)
+	if err != nil {
+		return 0, fmt.Errorf("failed to insert or retrieve genre: %w", err)
+	}
+
+	// Retrieve the ID of the inserted or existing genre
+	var genreID int
+	err = tx.QueryRow("SELECT LAST_INSERT_ID()").Scan(&genreID)
+	if err != nil {
+		return 0, fmt.Errorf("failed to retrieve genre ID: %w", err)
+	}
+
+	return genreID, nil
+}
+
+func insertPlaylistGenre(tx *sql.Tx, playlistID string, genreID int) error {
+	query := `
+		INSERT INTO PlaylistGenre (playlist_id, genre_id) VALUES (?, ?)
+		ON DUPLICATE KEY UPDATE playlist_id = VALUES(playlist_id), genre_id = VALUES(genre_id)
+	`
+	_, err := tx.Exec(query, playlistID, genreID)
+	if err != nil {
+		return fmt.Errorf("failed to insert playlist-genre relationship: %w", err)
+	}
+	return nil
 }
 
 func InsertTracks(db *sql.DB, playlist spotify.FullPlaylist, tracks []spotify.PlaylistTrack) error {

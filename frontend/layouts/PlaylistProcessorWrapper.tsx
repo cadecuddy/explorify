@@ -1,9 +1,10 @@
 import Footer from "@/components/Footer";
+import Loading from "@/components/Loading";
 import MetaHeader from "@/components/MetaHeader";
 import Nav from "@/components/Nav";
 import { checkLocalStorage } from "@/components/Utils";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 
 type PlaylistProcessorProps = {
@@ -20,11 +21,7 @@ type PlaylistProcessorProps = {
 export default function PlaylistProcessorWrapper({
   children,
 }: PlaylistProcessorProps) {
-  const { data: session } = useSession();
-
-  if (!session) {
-    redirect("/");
-  }
+  const { status, data: session } = useSession();
 
   useEffect(() => {
     const sendPlaylists = checkLocalStorage();
@@ -39,6 +36,14 @@ export default function PlaylistProcessorWrapper({
       });
     }
   }, []);
+
+  if (status === "loading") {
+    return <Loading />;
+  }
+
+  if (status != "authenticated") {
+    redirect("/");
+  }
 
   return (
     <>

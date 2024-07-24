@@ -8,3 +8,21 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+.button-transition {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button-transition:hover {
+  transform: scale(1.05);
+}
+
+.active-button {
+  background-color: #f0f0f0;
+  color: #121211;
+}
+
+.inactive-button {
+  background-color: transparent;
+  color: #fff;
+}

@@ -21,6 +21,17 @@ CREATE TABLE IF NOT EXISTS Artist (
     uri VARCHAR(255)
 );
 
+CREATE TABLE IF NOT EXISTS Genre (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS PlaylistGenre (
+    playlist_id VARCHAR(255) REFERENCES Playlist(id),
+    genre_id INT REFERENCES Genre(id),
+    PRIMARY KEY (playlist_id, genre_id)
+);
+
 CREATE TABLE IF NOT EXISTS Album (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255),

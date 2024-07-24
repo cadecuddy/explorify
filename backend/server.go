@@ -29,6 +29,8 @@ func main() {
 	r.POST("/playlists/process", api.SendPlaylistsToQueue)
 	r.POST("/playlists/search", api.FindPlaylistsWithTracks)
 
+	r.GET("/genres", api.GetGenres)
+
 	// set port to 3001
 	r.Run(":3001")
 }

@@ -27,6 +27,7 @@ export default function SearchBar() {
     setSearchQuery(e.target.value);
   };
 
+  // handle user clicking on track, adding it to their search
   const handleTrackSelection = (track: TrackSelection) => {
     // ensure not duplicate
     if (
@@ -41,6 +42,7 @@ export default function SearchBar() {
     setSearchQuery("");
   };
 
+  // monitor for enter
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && tracksToSearch.length > 0) {
       doPlaylistSearch();

@@ -1,7 +1,7 @@
 export { default } from "next-auth/middleware"
 
 export const config = {
-    matcher: ["/search"],
+    matcher: ["/search", "/browse", "/discover/:genre/:path"],
     pages: {
         signIn: "/signin"
     },

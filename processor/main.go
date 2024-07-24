@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -20,7 +21,7 @@ func failOnError(err error, msg string) {
 // as not-consumed so it can be tried again
 func failWhileConsuming(err error, msg string, d amqp.Delivery) {
 	if err != nil {
-		d.Nack(false, true)
+		d.Nack(false, false)
 		log.Panicf("%s: %s", msg, err)
 	}
 }
@@ -79,15 +80,23 @@ func main() {
 			tracks, err := utils.FetchTracks(d)
 			failWhileConsuming(err, "Error fetching tracks", d)
 
+			accessToken, err := utils.GetAccessTokenFromMessage(d)
+			failWhileConsuming(err, "Error getting access token from message", d)
+
+			// classify playlist genre based on track artists in playlist
+			genres, _ := utils.GetPlaylistGenre(tracks, accessToken)
+
 			// INSERT TRACKS INTO DATABASE, BATCH
 			err = database.InsertTracks(db, *playlist, tracks)
 			failWhileConsuming(err, "Error inserting tracks into DB", d)
 
-			err = database.InsertPlaylist(db, *playlist)
+			err = database.InsertPlaylist(db, *playlist, genres)
 			failWhileConsuming(err, "Error inserting playlist into DB", d)
 
 			time.Sleep(200 * time.Millisecond)
 			d.Ack(false)
+
+			fmt.Printf("Processed playlist: %s\n", playlist.Name)
 		}
 	}()
 
