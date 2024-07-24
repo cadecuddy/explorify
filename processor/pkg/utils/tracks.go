@@ -2,7 +2,6 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -62,9 +61,9 @@ func FetchTracks(d amqp.Delivery) ([]spotify.PlaylistTrack, error) {
 		}
 
 		// if track count is greater than 1000, drop the message
-		if playlistTracks.Total > 1000 {
-			return nil, fmt.Errorf("playlist has more than 1000 tracks: %d", playlistTracks.Total)
-		}
+		// if playlistTracks.Total > 1000 {
+		// 	return nil, fmt.Errorf("playlist has more than 1000 tracks: %d", playlistTracks.Total)
+		// }
 
 		tracks = append(tracks, playlistTracks.Tracks...)
 		if playlistTracks.Next == "" {

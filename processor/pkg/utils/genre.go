@@ -46,6 +46,7 @@ func getArtistIds(tracks []spotify.PlaylistTrack) []spotify.ID {
 	return artistIds
 }
 
+// fetch artist information from spotify api & save in big list
 func fetchArtistsGenres(artistIDs []spotify.ID, accessToken string) ([]*spotify.FullArtist, error) {
 	const maxBatchSize = 50
 	var artists []*spotify.FullArtist
@@ -65,7 +66,7 @@ func fetchArtistsGenres(artistIDs []spotify.ID, accessToken string) ([]*spotify.
 	return artists, nil
 }
 
-// Get a batch of artist information from the Spotify API
+// get batch of artist information from spotify api
 func getArtistsBatch(artistIDs []spotify.ID, accessToken string) ([]*spotify.FullArtist, error) {
 	spotifyBaseURL := "https://api.spotify.com/v1/"
 	url := fmt.Sprintf("%sartists?ids=%s", spotifyBaseURL, strings.Join(spotifyIDsToStrings(artistIDs), ","))
@@ -96,7 +97,8 @@ func getArtistsBatch(artistIDs []spotify.ID, accessToken string) ([]*spotify.Ful
 	return response.Artists, nil
 }
 
-// Convert a slice of spotify.ID to a slice of strings
+// convert a slice of spotify.ID to a slice of strings
+// stupuid but have to do it
 func spotifyIDsToStrings(ids []spotify.ID) []string {
 	strIDs := make([]string, len(ids))
 	for i, id := range ids {
@@ -105,7 +107,7 @@ func spotifyIDsToStrings(ids []spotify.ID) []string {
 	return strIDs
 }
 
-// Build a frequency map of genres from the list of artists
+// build a frequency map of genres from the list of artists
 func buildGenreFrequencyMap(artists []*spotify.FullArtist) map[string]int {
 	genreFreq := make(map[string]int)
 	for _, artist := range artists {
@@ -119,7 +121,7 @@ func buildGenreFrequencyMap(artists []*spotify.FullArtist) map[string]int {
 	return genreFreq
 }
 
-// Get the top N genres from the frequency map
+// get the top N genres from the frequency map
 func getTopGenres(genreFreq map[string]int, topN int) []string {
 	type genreCount struct {
 		genre string
