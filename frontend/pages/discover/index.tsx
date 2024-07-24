@@ -41,22 +41,19 @@ export default function Search() {
             Explore thousands of playlists by genre.
           </h2>
         </div>
-        <div className="text-white grid grid-cols-8 mx-auto justify-center py-12">
-          {genres.length > 0 &&
-            genres.map((genre) => (
-              <Link
-                href={`/discover/${genre.replaceAll(" ", "-")}`}
-                key={genre}
-                className="mx-auto my-auto"
-              >
-                <div
+        <div className="flex justify-center">
+          <div className="text-white py-12">
+            {genres.length > 0 &&
+              genres.map((genre) => (
+                <Link
+                  href={`/discover/${genre.replaceAll(" ", "_")}`}
                   key={genre}
-                  className="text-center text-white p-2 m-2 bg-neutral-800 rounded-lg"
+                  className="block text-left text-7xl w-fit font-bold text-gray-500 hover:text-white"
                 >
                   {genre}
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+          </div>
         </div>
       </PlaylistProcessorWrapper>
     </MainLayout>

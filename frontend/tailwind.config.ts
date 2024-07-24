@@ -22,6 +22,9 @@ const config = {
         background: "#121211",
         secondary: "#F6F7EB"
       },
+      fontFamily: {
+        'sans': ['system-ui', 'sans-serif'],
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

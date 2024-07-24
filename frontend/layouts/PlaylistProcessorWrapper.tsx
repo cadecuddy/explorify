@@ -37,14 +37,6 @@ export default function PlaylistProcessorWrapper({
     }
   }, []);
 
-  if (status === "loading") {
-    return <Loading />;
-  }
-
-  if (status != "authenticated") {
-    redirect("/");
-  }
-
   return (
     <>
       <div className="max-w-7xl mx-auto">

@@ -13,7 +13,7 @@ export default function Page() {
     >
       <PlaylistProcessorWrapper>
         <div className="justify-center text-center">
-          <h1 className="text-3xl sm:text-5xl font-extrabold p-2 text-orange-500">
+          <h1 className="text-3xl sm:text-7xl font-extrabold p-2 text-white">
             {toTitleCase(genre)}
           </h1>
         </div>
@@ -25,7 +25,7 @@ export default function Page() {
 function toTitleCase(str: string) {
   if (!str) return "";
   // get rid of dashes
-  str = str.replace(/-/g, " ");
+  str = str.replaceAll("_", " ");
 
   return str.replace(
     /\w\S*/g,
