@@ -14,6 +14,8 @@ type FullArtistResponse struct {
 	Artists []*spotify.FullArtist `json:"artists"`
 }
 
+// analyze all tracks in playlist by the artist's genre and
+// take the top 3 most common genres as the 'playlist's classification'
 func GetPlaylistGenre(tracks []spotify.PlaylistTrack, accessToken string) ([]string, error) {
 	artistIds := getArtistIds(tracks)
 

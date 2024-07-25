@@ -8,10 +8,6 @@ type RequestData = {
   tracks: string[]; // track ids
 };
 
-// type ResponseData = {
-//   playlists: SpotifyApi.PlaylistObjectFull;
-// };
-
 type ResponseData = {
   playlists: PlaylistSearchResult[];
 };
@@ -20,23 +16,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  if (req.method === "POST") {
-    const { session, tracks }: RequestData = req.body;
-
-    if (!session) return res.status(401).end(`Unauthorized`);
+  if (req.method === "GET") {
+    const { genre } = req.query;
 
     // send tracks to gin server
     const playlistRequest = await fetch(
-      `${GIN_WEB_SERVER_HOST}/playlists/tracks`,
+      `${GIN_WEB_SERVER_HOST}/playlists/genre?genre=${genre}`,
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          accessToken: session.accessToken,
-          tracks,
-        }),
+        method: "GET",
       }
     );
 
@@ -44,7 +31,7 @@ export default async function handler(
 
     return res.status(200).json({ playlists });
   } else {
-    res.setHeader("Allow", ["POST"]);
+    res.setHeader("Allow", ["GET"]);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

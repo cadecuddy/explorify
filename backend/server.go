@@ -27,7 +27,8 @@ func main() {
 	r.GET("/healthcheck", utils.HealthCheck)
 
 	r.POST("/playlists/process", api.SendPlaylistsToQueue)
-	r.POST("/playlists/search", api.FindPlaylistsWithTracks)
+	r.POST("/playlists/tracks", api.FindPlaylistsWithTracks)
+	r.GET("/playlists/genre", api.GetPlaylistsByGenre)
 
 	r.GET("/genres", api.GetGenres)
 

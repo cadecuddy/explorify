@@ -42,6 +42,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           value={value}
+          autoFocus
           onChange={onChange}
           className={cn(
             "px-10 flex h-14 w-full rounded-md bg-gray-100 ring-offset-0 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-black outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 font-normal text-base",

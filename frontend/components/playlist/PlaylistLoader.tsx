@@ -20,7 +20,7 @@ export async function fetchPublicPlaylists(
       },
     });
 
-    let data: SpotifyApi.PagingObject<SpotifyApi.PlaylistBaseObject> =
+    let data: SpotifyApi.PagingObject<SpotifyApi.PlaylistObjectSimplified> =
       await response.json();
     playlists.push(...data.items);
 
@@ -34,7 +34,13 @@ export async function fetchPublicPlaylists(
       playlists.push(...data.items);
     }
 
-    return playlists.filter((playlist) => playlist.public);
+    // only return public playlists with 1 or more tracks that are not made by Spotify
+    return playlists.filter(
+      (playlist) =>
+        playlist.public &&
+        playlist.owner.uri !== "spotify:user:spotify" &&
+        playlist.tracks.total > 0
+    );
   } catch (error) {
     console.error("Error fetching playlists:", error);
     return;

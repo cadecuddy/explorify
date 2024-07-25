@@ -22,7 +22,7 @@ export default function Search() {
         <SearchProvider>
           <div className="justify-center text-center">
             <h1 className="text-3xl sm:text-5xl font-semibold p-2 text-neutral-50">
-              Discover New Music
+              Search for Playlists
             </h1>
             <h2 className="text-lg sm:text-2xl font-normal text-neutral-400">
               Search songs, discover playlists, explore new music.
