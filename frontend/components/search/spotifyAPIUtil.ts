@@ -20,7 +20,13 @@ export type PlaylistSearchResult = {
 }
 
 export async function fetchSpotifyTracks(songName: string, session: Session): Promise<TrackSelection[]> {
-    const response = await fetch(`https://api.spotify.com/v1/search?q=${songName}&type=track&limit=5&offset=0`);
+    const response = await fetch(`https://api.spotify.com/v1/search?q=${songName}&type=track&limit=5&offset=0`,
+        {
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+            },
+        }
+    );
 
     let tracks: SpotifyApi.TrackSearchResponse = await response.json();
 

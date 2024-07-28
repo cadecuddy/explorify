@@ -3,9 +3,6 @@ import MainLayout from "@/layouts/MainLayout";
 import PlaylistProcessorWrapper from "@/layouts/PlaylistProcessorWrapper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import { decodeHTMLEntities } from "@/components/Utils";
-import Link from "next/link";
 import PlaylistCard from "@/components/playlist/PlaylistCard";
 
 export default function Page() {

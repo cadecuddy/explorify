@@ -43,11 +43,11 @@ export default function SearchBar() {
   };
 
   // monitor for enter
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && tracksToSearch.length > 0) {
-      doPlaylistSearch();
-    }
-  };
+  // const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === "Enter" && tracksToSearch.length > 0) {
+  //     doPlaylistSearch();
+  //   }
+  // };
 
   async function doPlaylistSearch() {
     if (data && data.accessToken && tracksToSearch.length > 0) {
@@ -57,7 +57,6 @@ export default function SearchBar() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          session: data,
           tracks: tracksToSearch.map((track) => track.id),
         }),
       });
@@ -107,7 +106,6 @@ export default function SearchBar() {
           onChange={handleInputChange}
           value={searchQuery}
           searchFunction={doPlaylistSearch}
-          onKeyDown={handleKeyPress}
         />
       </div>
       {suggestedTracks.length > 0 && (
