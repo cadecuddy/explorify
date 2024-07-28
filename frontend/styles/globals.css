@@ -26,3 +26,39 @@
   background-color: transparent;
   color: #fff;
 }
+
+/* Ensure the grid container has proper height and overflow settings */
+.grid-container {
+  height: 100vh; /* Full viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Define grid layout */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr); /* Single column by default */
+  gap: 1rem; /* Add some gap between items */
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on small screens */
+  }
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
+  }
+}
+
+/* Ensure the PlaylistCard has a minimum height to help with intersection observer */
+.playlist-card {
+  min-height: 350px;
+}

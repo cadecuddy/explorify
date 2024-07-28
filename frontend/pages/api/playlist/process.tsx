@@ -1,12 +1,8 @@
-import { fetchPublicPlaylists } from "@/components/playlist/PlaylistLoader";
+import { fetchUserPlaylists } from "@/components/playlist/PlaylistLoader";
 import { GIN_WEB_SERVER_HOST } from "@/configuration/APIConstants";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession, Session } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-
-type RequestData = {
-  session: Session;
-};
 
 type ResponseData = {
   message: string;
@@ -21,7 +17,7 @@ export default async function handler(
     if (!session) return res.status(401).end(`Unauthorized`);
 
     // get all of the user's public playlists from Spotify
-    const publicPlaylists = await fetchPublicPlaylists(session.accessToken);
+    const publicPlaylists = await fetchUserPlaylists(session.accessToken);
 
     if (!publicPlaylists) {
       res.status(500).json({ message: "Error fetching playlists" });

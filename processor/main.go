@@ -17,15 +17,6 @@ func failOnError(err error, msg string) {
 	}
 }
 
-// Similar to failOnError, but marks the message
-// as not-consumed so it can be tried again
-func failWhileConsuming(err error, msg string, d amqp.Delivery) {
-	if err != nil {
-		d.Nack(false, false)
-		log.Panicf("%s: %s", msg, err)
-	}
-}
-
 func main() {
 	rabbitmqUser := os.Getenv("RABBITMQ_DEFAULT_USER")
 	rabbitmqPass := os.Getenv("RABBITMQ_DEFAULT_PASS")
@@ -75,28 +66,48 @@ func main() {
 	go func() {
 		for d := range msgs {
 			playlist, err := utils.GetPlaylistFromMessage(d)
-			failWhileConsuming(err, "Error fetching playlist", d)
+			if err != nil {
+				log.Printf("Error getting playlist from message: %s", err)
+				d.Nack(false, false)
+				continue
+			}
 
 			tracks, err := utils.FetchTracks(d)
-			failWhileConsuming(err, "Error fetching tracks", d)
+			if err != nil {
+				log.Printf("Error fetching tracks: %s", err)
+				d.Nack(false, false)
+				continue
+			}
 
 			accessToken, err := utils.GetAccessTokenFromMessage(d)
-			failWhileConsuming(err, "Error getting access token from message", d)
+			if err != nil {
+				log.Printf("Error getting access token from message: %s", err)
+				d.Nack(false, false)
+				continue
+			}
 
 			// classify playlist genre based on track artists in playlist
 			genres, _ := utils.GetPlaylistGenre(tracks, accessToken)
 
 			// INSERT TRACKS INTO DATABASE, BATCH
 			err = database.InsertTracks(db, *playlist, tracks)
-			failWhileConsuming(err, "Error inserting tracks into DB", d)
+			if err != nil {
+				log.Printf("Error inserting tracks into DB: %s", err)
+				d.Nack(false, true)
+				continue
+			}
 
 			err = database.InsertPlaylist(db, *playlist, genres)
-			failWhileConsuming(err, "Error inserting playlist into DB", d)
+			if err != nil {
+				log.Printf("Error inserting playlist into DB: %s", err)
+				d.Nack(false, true)
+				continue
+			}
 
 			time.Sleep(200 * time.Millisecond)
 			d.Ack(false)
 
-			fmt.Printf("Processed playlist: %s\n", playlist.Name)
+			fmt.Printf("Processed playlist: %s - IS PUBLIC: %v\n", playlist.Name, playlist.IsPublic)
 		}
 	}()
 

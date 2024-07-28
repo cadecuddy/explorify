@@ -16,7 +16,6 @@ func FetchTracks(d amqp.Delivery) ([]spotify.PlaylistTrack, error) {
 	err := json.Unmarshal(d.Body, &message)
 	if err != nil {
 		log.Printf("Error unmarshalling message: %s", err)
-		d.Nack(false, true)
 		return nil, err
 	}
 
@@ -24,7 +23,6 @@ func FetchTracks(d amqp.Delivery) ([]spotify.PlaylistTrack, error) {
 	req, err := http.NewRequest("GET", types.PLAYLIST_ENDPOINT+message.Playlist.ID.String()+"/tracks?"+types.TRACK_METADATA_QUERY+"&offset=0&limit=100", nil)
 	if err != nil {
 		log.Printf("Error creating request: %s", err)
-		d.Nack(false, true)
 		return nil, err
 	}
 
@@ -39,7 +37,6 @@ func FetchTracks(d amqp.Delivery) ([]spotify.PlaylistTrack, error) {
 		resp, err := client.Do(req)
 		if err != nil {
 			log.Printf("Error making request: %s", err)
-			d.Nack(false, true)
 			return nil, err
 		}
 		defer resp.Body.Close()
@@ -47,7 +44,6 @@ func FetchTracks(d amqp.Delivery) ([]spotify.PlaylistTrack, error) {
 		// checking status code
 		if resp.StatusCode != http.StatusOK {
 			log.Printf("Non-200 response: %d", resp.StatusCode)
-			d.Nack(false, true)
 			return nil, err
 		}
 
@@ -56,7 +52,6 @@ func FetchTracks(d amqp.Delivery) ([]spotify.PlaylistTrack, error) {
 		err = json.NewDecoder(resp.Body).Decode(&playlistTracks)
 		if err != nil {
 			log.Printf("Error decoding response: %s", err)
-			d.Nack(false, true)
 			return nil, err
 		}
 

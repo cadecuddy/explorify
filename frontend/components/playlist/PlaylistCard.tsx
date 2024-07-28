@@ -19,14 +19,14 @@ export default function PlaylistCard({
           alt={playlist.name}
           width={300}
           height={300}
-          className="h-[350px] w-[350px] object-cover opacity-25 transition duration-100 ease-in-out group-hover:opacity-50"
+          className="w-full h-48 sm:h-64 md:h-72 lg:h-80 object-cover opacity-25 transition duration-100 ease-in-out group-hover:opacity-50"
         />
-        <div className="absolute top-0 left-0 right-0 w-64 p-4 text-3xl group-hover:text-white">
+        <div className="absolute top-0 left-0 right-0 p-4 text-lg sm:text-xl md:text-2xl group-hover:text-white">
           <h2 className="font-extrabold">
             {decodeHTMLEntities(playlist.name)}
           </h2>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-base font-semibold group-hover:text-white">
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-sm sm:text-base md:text-lg font-semibold group-hover:text-white">
           <p>{playlist.ownerName}</p>
           <p>
             {playlist.tracks.toLocaleString()} tracks{" "}

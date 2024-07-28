@@ -82,6 +82,13 @@ function AuthedNav({ session }: { session: Session }) {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-36 bg-red-500 transition duration-500">
           <DropdownMenuItem>
+            <Link href="/profile">
+              <div className="hover:cursor-pointer hover:outline-none hover:ring-0 outline-transparent">
+                Profile
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
             <div
               className="hover:cursor-pointer hover:outline-none hover:ring-0 outline-transparent"
               onClick={() =>

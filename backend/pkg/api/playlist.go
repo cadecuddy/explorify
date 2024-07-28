@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -47,6 +48,19 @@ func SendPlaylistsToQueue(c *gin.Context) {
 
 	// publish all playlists to the processing queue
 	for _, playlist := range request.Playlists {
+		// check if playlist snapshot_id is the same, if it is, skip it
+		sameSnapshotId, err := checkSnapshotIdIsSame(playlist.ID.String(), playlist.SnapshotID)
+		if err != nil {
+			log.Println("Failed to check if snapshot_id is the same")
+			log.Println(err)
+			continue
+		}
+
+		if sameSnapshotId {
+			log.Println("Playlist snapshot_id is the same, skipping")
+			continue
+		}
+
 		message := PlaylistMessage{
 			AccessToken: request.AccessToken,
 			Playlist:    playlist,
@@ -160,4 +174,23 @@ func getPlaylistsFromTracks(trackIds []string) ([]Playlist, error) {
 	}
 
 	return playlists, nil
+}
+
+// checks if the snapshot_id is the same as the one in the database
+func checkSnapshotIdIsSame(playlistId string, currentSnapshotId string) (bool, error) {
+	db, err := database.GetConnection()
+	if err != nil {
+		return false, err
+	}
+
+	var dbSnapshotId string
+	err = db.QueryRow("SELECT snapshot_id FROM Playlist WHERE id = ?", playlistId).Scan(&dbSnapshotId)
+	if err == sql.ErrNoRows {
+		// if there's no existing row, snapshot id can't be the same
+		return false, nil
+	} else if err != nil {
+		return false, err
+	}
+
+	return dbSnapshotId == currentSnapshotId, nil
 }

@@ -1,13 +1,14 @@
-import { Session } from "next-auth";
-
 const CURRENT_USER_PLAYLIST_ENDPOINT = `https://api.spotify.com/v1/me/playlists?limit=50`;
 
 /**
- * Fetch the current user's public playlists
+ * Fetch the current user's playlists. Ideally this would
+ * only fetch the public ones, but from this endpoint we
+ * can't tell if a playlist is public or not because their responses
+ * are shitty.
  * @param session NextAuth session object
  * @returns Array of Spotify playlist objectsF
  */
-export async function fetchPublicPlaylists(
+export async function fetchUserPlaylists(
   accessToken: string
 ): Promise<SpotifyApi.PlaylistBaseObject[] | undefined> {
   if (!accessToken) return;

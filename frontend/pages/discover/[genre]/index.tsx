@@ -31,7 +31,7 @@ export default function Page() {
     >
       <PlaylistProcessorWrapper>
         <div className="justify-center text-center">
-          <h1 className="text-3xl sm:text-7xl font-extrabold p-2 text-white">
+          <h1 className="text-3xl sm:text-5xl font-extrabold p-2 text-white">
             {toTitleCase(genre)}
           </h1>
           {playlistResults.length > 0 ? (
@@ -46,11 +46,11 @@ export default function Page() {
           )}
         </div>
         <hr className="mt-4 mb-4 border-neutral-700" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 py-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-6">
           {playlistResults &&
             playlistResults.length > 0 &&
             playlistResults.map((playlist) => (
-              <PlaylistCard key={playlist.id} playlist={playlist} />
+              <PlaylistCard playlist={playlist} key={playlist.id} />
             ))}
         </div>
       </PlaylistProcessorWrapper>
@@ -60,5 +60,7 @@ export default function Page() {
 
 function toTitleCase(str: string) {
   if (!str) return "";
-  return str.replaceAll("_", " ");
+  return str.replaceAll("_", " ").replace(/\w\S*/g, (txt) => {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
 }

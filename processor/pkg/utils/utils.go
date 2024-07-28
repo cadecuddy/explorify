@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 
@@ -15,7 +16,6 @@ func GetAccessTokenFromMessage(d amqp.Delivery) (string, error) {
 	err := json.Unmarshal(d.Body, &message)
 	if err != nil {
 		log.Printf("Error getting access token from message: %s", err)
-		d.Nack(false, true)
 		return "", err
 	}
 
@@ -27,16 +27,14 @@ func GetPlaylistFromMessage(d amqp.Delivery) (*spotify.FullPlaylist, error) {
 	err := json.Unmarshal(d.Body, &message)
 	if err != nil {
 		log.Printf("Error unmarshalling message: %s", err)
-		d.Nack(false, true)
 		return nil, err
 	}
 
-	// get full playlist from Spotify api request, not a spotify client
+	// get full playlist from Spotify api request
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", types.PLAYLIST_ENDPOINT+message.Playlist.ID.String(), nil)
 	if err != nil {
 		log.Printf("Error creating request: %s", err)
-		d.Nack(false, true)
 		return nil, err
 	}
 
@@ -44,7 +42,6 @@ func GetPlaylistFromMessage(d amqp.Delivery) (*spotify.FullPlaylist, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Printf("Error making request: %s", err)
-		d.Nack(false, true)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -53,8 +50,11 @@ func GetPlaylistFromMessage(d amqp.Delivery) (*spotify.FullPlaylist, error) {
 	err = json.NewDecoder(resp.Body).Decode(playlist)
 	if err != nil {
 		log.Printf("Error decoding response: %s", err)
-		d.Nack(false, true)
 		return nil, err
+	}
+
+	if !playlist.IsPublic {
+		return nil, errors.New("playlist is not public")
 	}
 
 	return playlist, nil

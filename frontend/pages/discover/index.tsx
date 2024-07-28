@@ -1,5 +1,4 @@
 import Loading from "@/components/Loading";
-import SearchBar from "@/components/search/SearchBar";
 import MainLayout from "@/layouts/MainLayout";
 import PlaylistProcessorWrapper from "@/layouts/PlaylistProcessorWrapper";
 import { useSession } from "next-auth/react";
