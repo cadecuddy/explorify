@@ -19,10 +19,11 @@ var (
 // GetMessageQueueChannel returns a singleton connection to the RabbitMQ channel
 func GetMessageQueueChannel() (*amqp.Channel, error) {
 	once.Do(func() {
+		rabbitmqHost := os.Getenv("RABBITMQ_SERVER_NAME")
 		rabbitmqUser := os.Getenv("RABBITMQ_DEFAULT_USER")
 		rabbitmqPass := os.Getenv("RABBITMQ_DEFAULT_PASS")
 
-		conn, connErr = amqp.Dial("amqp://" + rabbitmqUser + ":" + rabbitmqPass + "@rabbitmq")
+		conn, connErr = amqp.Dial("amqp://" + rabbitmqUser + ":" + rabbitmqPass + "@" + rabbitmqHost)
 
 		utils.FailOnError(connErr, "Error connecting to Rabbitmq")
 

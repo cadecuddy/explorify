@@ -2,26 +2,26 @@ services:
   frontend:
     build: ./frontend
     restart: unless-stopped
-    container_name: explorify_frontend
+    container_name: ${EXPLORIFY_CLIENT_NAME}
     depends_on:
       - backend
     env_file:
-      - ./frontend/.env.local
+      - .env
     volumes:
       - "./frontend:/app"
     ports:
-      - 3000:3000
+      - ${EXPLORIFY_CLIENT_PORT}:3000
 
   backend:
     build: ./backend
     restart: unless-stopped
-    container_name: explorify_webserver
+    container_name: ${EXPLORIFY_WEBSERVER_NAME}
     depends_on:
       - rabbitmq
     ports:
-      - 3001:3001
+      - ${EXPLORIFY_WEBSERVER_PORT}:3001
     env_file:
-      - .env.global
+      - .env
 
   playlist_processor:
     build: ./processor
@@ -30,34 +30,34 @@ services:
       - rabbitmq
       - mysql
     ports:
-      - 3002
+      - ${EXPLORIFY_PROCESSOR_PORT}
     env_file:
-      - .env.global
+      - .env
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
     restart: unless-stopped
-    container_name: "rabbitmq"
+    container_name: ${RABBITMQ_SERVER_NAME}
     depends_on:
       - mysql
     ports:
-      - 5672:5672
-      - 15672:15672
+      - ${RABBITMQ_SERVER_PORT0}:5672
+      - ${RABBITMQ_SERVER_PORT1}:15672
     volumes:
       - ./rabbitmq/data/:/var/lib/rabbitmq/
       - ./rabbitmq/log/:/var/log/rabbitmq
     env_file:
-      - .env.global
+      - .env
 
   mysql:
     build:
       context: ./database/
     image: "mysql:8.0"
-    container_name: mysql
+    container_name: ${MYSQL_HOST_NAME}
     restart: unless-stopped
     ports:
-      - "3309:3306"
+      - ${MYSQL_HOST_PORT}:3306
     volumes:
       - ./database/data:/var/lib/mysql
     env_file:
-      - .env.global
+      - .env

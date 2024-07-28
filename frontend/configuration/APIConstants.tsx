@@ -1,1 +1,1 @@
-export const GIN_WEB_SERVER_HOST = "http://explorify_webserver:3001";
+export const GIN_WEB_SERVER_HOST = `http://${process.env.EXPLORIFY_WEBSERVER_NAME}:${process.env.EXPLORIFY_WEBSERVER_PORT}`;

@@ -16,12 +16,12 @@ var (
 )
 
 func GetConnection() (*sql.DB, error) {
-	// user := os.Getenv("MYSQL_PROCESSOR_USER")
 	pass := os.Getenv("MYSQL_ROOT_PASSWORD")
 	dbName := os.Getenv("MYSQL_DATABASE")
+	dbHostname := os.Getenv("MYSQL_HOST_NAME")
 
 	once.Do(func() {
-		db, dbError = sql.Open("mysql", fmt.Sprintf("root:%s@tcp(mysql:3306)/%s", pass, dbName))
+		db, dbError = sql.Open("mysql", fmt.Sprintf("root:%s@tcp(%s:3306)/%s", pass, dbHostname, dbName))
 		if dbError != nil {
 			panic(dbError.Error())
 		}

@@ -70,7 +70,8 @@ export default function Search() {
         </div>
         <div className="flex justify-start sm:ml-48">
           <div className="text-white py-12">
-            {genres.length > 0 &&
+            {genres &&
+              genres.length > 0 &&
               displayedGenres.map((genre) => (
                 <Link
                   href={`/discover/${genre.replaceAll(" ", "_")}`}
