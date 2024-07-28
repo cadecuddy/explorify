@@ -26,7 +26,7 @@ func GetPlaylistGenre(tracks []spotify.PlaylistTrack, accessToken string) ([]str
 
 	genreFreq := buildGenreFrequencyMap(artists)
 
-	topGenres := getTopGenres(genreFreq, 3)
+	topGenres := getTopGenres(genreFreq, 6)
 
 	return topGenres, nil
 }
@@ -124,6 +124,7 @@ func buildGenreFrequencyMap(artists []*spotify.FullArtist) map[string]int {
 }
 
 // get the top N genres from the frequency map
+// genres that tie with the Nth most common genre are included
 func getTopGenres(genreFreq map[string]int, topN int) []string {
 	type genreCount struct {
 		genre string

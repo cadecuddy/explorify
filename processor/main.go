@@ -18,13 +18,14 @@ func failOnError(err error, msg string) {
 }
 
 func main() {
+	rabbitmqHost := os.Getenv("RABBITMQ_SERVER_NAME")
 	rabbitmqUser := os.Getenv("RABBITMQ_DEFAULT_USER")
 	rabbitmqPass := os.Getenv("RABBITMQ_DEFAULT_PASS")
 
 	db, err := database.GetConnection()
 	failOnError(err, "Couldn't connect to MySQL from consumer")
 
-	conn, connErr := amqp.Dial("amqp://" + rabbitmqUser + ":" + rabbitmqPass + "@rabbitmq")
+	conn, connErr := amqp.Dial("amqp://" + rabbitmqUser + ":" + rabbitmqPass + "@" + rabbitmqHost)
 	failOnError(connErr, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
