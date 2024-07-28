@@ -11,7 +11,7 @@ export default function PlaylistCard({
   return (
     <div
       key={playlist.id}
-      className="relative bg-neutral-800 border-2 border-secondary rounded-lg overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:cursor-pointer"
+      className="relative bg-neutral-800 text-neutral-400 border-secondary overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:cursor-pointer hover:z-10 hover:text-white"
     >
       <Link href={playlist.url} target="_blank">
         <Image
@@ -19,18 +19,16 @@ export default function PlaylistCard({
           alt={playlist.name}
           width={300}
           height={300}
-          className="h-[350px] w-[350px] object-cover opacity-30 transition duration-100 ease-in-out hover:opacity-50"
+          className="h-[350px] w-[350px] object-cover opacity-25 transition duration-100 ease-in-out hover:opacity-50"
         />
         <div className="absolute top-0 left-0 right-0 w-64 p-4 text-3xl">
-          <h2 className="text-white font-extrabold">
+          <h2 className="font-extrabold">
             {decodeHTMLEntities(playlist.name)}
           </h2>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent to-transparent p-4">
-          <p className="text-white text-sm font-semibold">
-            {playlist.ownerName}
-          </p>
-          <p className="text-white text-base font-semibold">
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-base font-semibold">
+          <p>{playlist.ownerName}</p>
+          <p>
             {playlist.tracks.toLocaleString()} tracks{" "}
             <span className="text-xs">●</span>{" "}
             {playlist.followers.toLocaleString()} followers

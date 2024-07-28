@@ -34,8 +34,19 @@ export default function Page() {
           <h1 className="text-3xl sm:text-7xl font-extrabold p-2 text-white">
             {toTitleCase(genre)}
           </h1>
+          {playlistResults.length > 0 ? (
+            <h2 className="text-lg sm:text-2xl font-normal text-neutral-400 pt-2">
+              {playlistResults.length.toLocaleString()}{" "}
+              {playlistResults.length === 1 ? "playlist" : "playlists"} found
+            </h2>
+          ) : (
+            <h2 className="text-lg sm:text-2xl font-normal text-neutral-400 pt-2">
+              No playlists found
+            </h2>
+          )}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 p-6">
+        <hr className="mt-4 mb-4 border-neutral-700" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 py-6">
           {playlistResults &&
             playlistResults.length > 0 &&
             playlistResults.map((playlist) => (
