@@ -11,7 +11,7 @@ export default function PlaylistCard({
   return (
     <div
       key={playlist.id}
-      className="relative bg-neutral-800 text-neutral-400 border-secondary overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:cursor-pointer hover:z-10 hover:text-white"
+      className="relative bg-neutral-800 text-neutral-400 border-secondary overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:cursor-pointer hover:z-10 group"
     >
       <Link href={playlist.url} target="_blank">
         <Image
@@ -19,14 +19,14 @@ export default function PlaylistCard({
           alt={playlist.name}
           width={300}
           height={300}
-          className="h-[350px] w-[350px] object-cover opacity-25 transition duration-100 ease-in-out hover:opacity-50"
+          className="h-[350px] w-[350px] object-cover opacity-25 transition duration-100 ease-in-out group-hover:opacity-50"
         />
-        <div className="absolute top-0 left-0 right-0 w-64 p-4 text-3xl">
+        <div className="absolute top-0 left-0 right-0 w-64 p-4 text-3xl group-hover:text-white">
           <h2 className="font-extrabold">
             {decodeHTMLEntities(playlist.name)}
           </h2>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-base font-semibold">
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-base font-semibold group-hover:text-white">
           <p>{playlist.ownerName}</p>
           <p>
             {playlist.tracks.toLocaleString()} tracks{" "}
