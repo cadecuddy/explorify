@@ -1,7 +1,8 @@
 import { PlaylistSearchResult } from "@/components/search/spotifyAPIUtil";
 import { GIN_WEB_SERVER_HOST } from "@/configuration/APIConstants";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Session } from "next-auth";
+import { getServerSession, Session } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 type RequestData = {
   session: Session;
@@ -17,6 +18,8 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
   if (req.method === "GET") {
+    const session = await getServerSession(req, res, authOptions);
+    if (!session) return res.status(401).end(`Unauthorized`);
     const { genre } = req.query;
 
     // send tracks to gin server

@@ -33,7 +33,6 @@ export default function Search() {
       fetch("/api/spotify/genres", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session.accessToken}`,
         },
       }).then(async (res) => {
         const data = await res.json();
