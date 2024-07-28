@@ -8,15 +8,15 @@ const CURRENT_USER_PLAYLIST_ENDPOINT = `https://api.spotify.com/v1/me/playlists?
  * @returns Array of Spotify playlist objectsF
  */
 export async function fetchPublicPlaylists(
-  session: Session
+  accessToken: string
 ): Promise<SpotifyApi.PlaylistBaseObject[] | undefined> {
-  if (!session || !session.accessToken) return;
+  if (!accessToken) return;
   const playlists = [];
 
   try {
     const response = await fetch(CURRENT_USER_PLAYLIST_ENDPOINT, {
       headers: {
-        Authorization: `Bearer ${session.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -27,7 +27,7 @@ export async function fetchPublicPlaylists(
     while (data.next) {
       const response = await fetch(data.next, {
         headers: {
-          Authorization: `Bearer ${session.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       data = await response.json();
