@@ -4,7 +4,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/cadecuddy/explorify/pkg/utils"
+	"github.com/cadecuddy/explorify/internal/utils"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

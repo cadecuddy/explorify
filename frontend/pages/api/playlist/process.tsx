@@ -24,6 +24,8 @@ export default async function handler(
       return;
     }
 
+    const playlistIds = publicPlaylists.filter((playlist) => playlist.id);
+
     // Send playlists to gin server for processing
     const processRequest = await fetch(
       `${GIN_WEB_SERVER_HOST}/playlists/process`,
@@ -34,7 +36,7 @@ export default async function handler(
         },
         body: JSON.stringify({
           accessToken: session.accessToken,
-          playlists: publicPlaylists,
+          playlists: playlistIds,
         }),
       }
     );

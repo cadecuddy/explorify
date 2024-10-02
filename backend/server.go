@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/cadecuddy/explorify/pkg/api"
-	"github.com/cadecuddy/explorify/pkg/database"
-	"github.com/cadecuddy/explorify/pkg/rabbitmq"
-	"github.com/cadecuddy/explorify/pkg/utils"
+	"github.com/cadecuddy/explorify/internal/api"
+	"github.com/cadecuddy/explorify/internal/database"
+	"github.com/cadecuddy/explorify/internal/rabbitmq"
+	"github.com/cadecuddy/explorify/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 

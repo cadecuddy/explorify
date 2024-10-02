@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 
-	"github.com/cadecuddy/explorify/pkg/database"
+	"github.com/cadecuddy/explorify/internal/database"
 	"github.com/gin-gonic/gin"
 )
 

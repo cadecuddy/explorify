@@ -7,9 +7,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/cadecuddy/explorify/pkg/database"
-	"github.com/cadecuddy/explorify/pkg/rabbitmq"
-	"github.com/cadecuddy/explorify/pkg/utils"
+	"github.com/cadecuddy/explorify/internal/database"
+	"github.com/cadecuddy/explorify/internal/rabbitmq"
+	"github.com/cadecuddy/explorify/internal/utils"
 	"github.com/gin-gonic/gin"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/zmb3/spotify"
@@ -33,8 +33,8 @@ type HandlePlaylistRequest struct {
 }
 
 type PlaylistMessage struct {
-	AccessToken string               `json:"access_token"`
-	Playlist    spotify.FullPlaylist `json:"playlist"`
+	AccessToken string `json:"access_token"`
+	PlaylistId  string `json:"playlist_id"`
 }
 
 // Recieves logged in user's public playlists and forwards them to the processing queue
@@ -50,6 +50,7 @@ func SendPlaylistsToQueue(c *gin.Context) {
 	for _, playlist := range request.Playlists {
 		// check if playlist snapshot_id is the same, if it is, skip it
 		sameSnapshotId, err := checkSnapshotIdIsSame(playlist.ID.String(), playlist.SnapshotID)
+		// TODO: change this call to batch get all snapshot ids?
 		if err != nil {
 			log.Println("Failed to check if snapshot_id is the same")
 			log.Println(err)
@@ -63,7 +64,7 @@ func SendPlaylistsToQueue(c *gin.Context) {
 
 		message := PlaylistMessage{
 			AccessToken: request.AccessToken,
-			Playlist:    playlist,
+			PlaylistId:  string(playlist.ID),
 		}
 
 		messageBody, err := json.Marshal(message)
