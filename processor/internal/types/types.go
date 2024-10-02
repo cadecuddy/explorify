@@ -1,7 +1,5 @@
 package types
 
-import "github.com/zmb3/spotify"
-
 const (
 	PLAYLIST_ENDPOINT       = "https://api.spotify.com/v1/playlists/"
 	PLAYLIST_METADATA_QUERY = "fields=description%2Cexternal_urls.spotify%2Cfollowers%2Cid%2Cimages%2Cname%2Cowner%2Csnapshot_id"
@@ -9,6 +7,6 @@ const (
 )
 
 type PlaylistMessage struct {
-	AccessToken string               `json:"access_token"`
-	Playlist    spotify.FullPlaylist `json:"playlist"`
+	AccessToken string `json:"access_token"`
+	PlaylistId  string `json:"playlist_id"`
 }

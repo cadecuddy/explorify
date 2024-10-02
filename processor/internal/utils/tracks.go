@@ -6,21 +6,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/cadecuddy/explorify-processor/pkg/types"
-	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/cadecuddy/explorify-processor/internal/types"
 	"github.com/zmb3/spotify"
 )
 
-func FetchTracks(d amqp.Delivery) ([]spotify.PlaylistTrack, error) {
-	var message types.PlaylistMessage
-	err := json.Unmarshal(d.Body, &message)
-	if err != nil {
-		log.Printf("Error unmarshalling message: %s", err)
-		return nil, err
-	}
-
+func FetchTracks(message types.PlaylistMessage) ([]spotify.PlaylistTrack, error) {
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", types.PLAYLIST_ENDPOINT+message.Playlist.ID.String()+"/tracks?"+types.TRACK_METADATA_QUERY+"&offset=0&limit=100", nil)
+	req, err := http.NewRequest("GET", types.PLAYLIST_ENDPOINT+message.PlaylistId+"/tracks?"+types.TRACK_METADATA_QUERY+"&offset=0&limit=100", nil)
 	if err != nil {
 		log.Printf("Error creating request: %s", err)
 		return nil, err

@@ -1,13 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"time"
 
-	"github.com/cadecuddy/explorify-processor/pkg/database"
-	"github.com/cadecuddy/explorify-processor/pkg/utils"
+	"github.com/cadecuddy/explorify-processor/internal/database"
+	"github.com/cadecuddy/explorify-processor/internal/types"
+	"github.com/cadecuddy/explorify-processor/internal/utils"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -66,29 +68,28 @@ func main() {
 	// Listen for playlist ID messages in the queue and fetch all the tracks for each playlist
 	go func() {
 		for d := range msgs {
-			playlist, err := utils.GetPlaylistFromMessage(d)
+			var message types.PlaylistMessage
+			err := json.Unmarshal(d.Body, &message)
+			if err != nil {
+				log.Printf("Error getting access token from message: %s", err)
+			}
+
+			playlist, err := utils.GetPlaylistFromMessage(message)
 			if err != nil {
 				log.Printf("Error getting playlist from message: %s", err)
 				d.Nack(false, false)
 				continue
 			}
 
-			tracks, err := utils.FetchTracks(d)
+			tracks, err := utils.FetchTracks(message)
 			if err != nil {
 				log.Printf("Error fetching tracks: %s", err)
 				d.Nack(false, false)
 				continue
 			}
 
-			accessToken, err := utils.GetAccessTokenFromMessage(d)
-			if err != nil {
-				log.Printf("Error getting access token from message: %s", err)
-				d.Nack(false, false)
-				continue
-			}
-
 			// classify playlist genre based on track artists in playlist
-			genres, _ := utils.GetPlaylistGenre(tracks, accessToken)
+			genres, _ := utils.GetPlaylistGenre(tracks, message.AccessToken)
 
 			// INSERT TRACKS INTO DATABASE, BATCH
 			err = database.InsertTracks(db, *playlist, tracks)
