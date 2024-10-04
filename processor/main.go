@@ -71,7 +71,7 @@ func main() {
 			var message types.PlaylistMessage
 			err := json.Unmarshal(d.Body, &message)
 			if err != nil {
-				log.Printf("Error getting access token from message: %s", err)
+				log.Printf("Error unmarshalling message: %s", err)
 			}
 
 			playlist, err := utils.GetPlaylistFromMessage(message)
